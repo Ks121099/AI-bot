@@ -3,22 +3,32 @@ import datetime
 import speech_recognition as sr
 import webbrowser as wb
 import pyautogui
+# import wikipedia
+import pyjokes
+import vlc
 import os
+import psutil
 
 engine = pyttsx3.init()
+
+rate = engine.getProperty('rate')   
+
 month = ["January", "February", "March", "April", "May", "June",
          "July", "August", "September", "October", "November", "December"]
-
 
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
 
-
 def time():
     Time = datetime.datetime.now().strftime("%I:%M:%S")
     speak("Current Time is " + Time)
 
+def cpu():
+    usage=str(psutil.cpu_percent())
+    speak("CPU is at "+usage )
+    battery=psutil.sensors_battery()
+    speak("Current battery is at "+str(battery.percent)+"percent")
 
 def date():
     y = str(datetime.datetime.now().year)
@@ -26,6 +36,12 @@ def date():
     d = str(datetime.datetime.now().day)
     speak("Today's Date is " + d+" "+month[m-1]+" "+y)
 
+# def song():
+#     p=vlc.MediaPlayer(r"C:\Users\Admin\Desktop\webd\projects\Jarvis\COCACOLA.mp3")
+#     p.play()
+
+def joke():
+    speak(pyjokes.get_joke())
 
 def greeting():
     h = datetime.datetime.now().hour
@@ -74,9 +90,17 @@ if __name__ == "__main__":
             path1= 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
             ip1= command().lower()
             wb.get(path1).open_new_tab(ip1+'.com')
+
+           
         elif 'screenshot' in ip:
             ss()
             speak("Its Done!! The screenshot has been saved in the respective folder")
+        elif 'cpu' in ip:
+            cpu()
+        elif 'joke' in ip:
+            engine.setProperty('rate', 175)  
+            joke()
+            engine.setProperty('rate', 200)  
         elif 'logout'in ip:
             os.system("shutdown -l")
         elif 'shutdown'in ip:
